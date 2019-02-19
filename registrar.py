@@ -34,5 +34,5 @@ def deploy(private_key):
 	print("Contract address: {}".format(tx["contractAddress"]))
 	return tx, abi
 
-if sys.arvg[1] == "--deploy":
+if sys.argv[1] == "--deploy":
 	deploy(private_key)
