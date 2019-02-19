@@ -11,7 +11,7 @@ with open('account.json') as file:
 
 ### Put your code below this comment ###
 
-private_key = "c4040569325e96e157a7a25178067cec01b8e5eebac2a5c1cf91cfbd4d1a997f"
+private_key = account_config["account"]
 
 def deploy(private_key):
 	account = web3.eth.account.privateKeyToAccount(private_key)
