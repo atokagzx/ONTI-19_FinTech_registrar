@@ -11,7 +11,7 @@ with open('account.json') as file:
 
 ### Put your code below this comment ###
 
-private_key = account_config["account"]
+private_key = "c4040569325e96e157a7a25178067cec01b8e5eebac2a5c1cf91cfbd4d1a997f"
 
 def deploy(private_key):
 	account = web3.eth.account.privateKeyToAccount(private_key)
@@ -23,7 +23,7 @@ def deploy(private_key):
 	tx_c = contract.constructor().buildTransaction({
 		"from" : account.address,
 		"nonce" : web3.eth.getTransactionCount(account.address),
-		"gas" : 400000,
+		"gas" : 1000000,
 		"gasPrice" : web3.eth.gasPrice
 		})
 	signed = account.signTransaction(tx_c)
