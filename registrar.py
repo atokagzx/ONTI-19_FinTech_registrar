@@ -30,7 +30,7 @@ def deploy(private_key):
 	tx_hash = web3.eth.sendRawTransaction(signed.rawTransaction)
 	tx = web3.eth.waitForTransactionReceipt(tx_hash)
 	with open('database.json', 'w') as file:
-		dump({"registar" : tx["contractAddress"], "startBlock" : tx["blockNumber"]}, file)
+		dump({"registrar" : tx["contractAddress"], "startBlock" : tx["blockNumber"]}, file)
 	print("Contract address: {}".format(tx["contractAddress"]))
 	return tx, abi
 
