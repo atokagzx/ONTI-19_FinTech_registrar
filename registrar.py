@@ -113,7 +113,17 @@ def get_account(name):
 	except:
 		print("No account registered for this name")
 	else:
-		print("Registered account is {}".format(contract.functions.getacc("{}".format(name)).call()))
+		ls = contract.functions.lst().call()
+		same_names = []
+		for addr in ls:
+			if contract.functions.getname(addr).call() == name:
+				same_names.append(addr)
+		if len(same_names) > 1:
+			print("Registered accounts are:")
+			for x in same_names:
+				print(x)
+		else:
+			print("Registered account is {}".format(contract.functions.getacc("{}".format(name)).call()))
 
 def get_name(address):
 	with open("database.json") as database:
@@ -129,6 +139,17 @@ def get_name(address):
 	else:
 		print("Registered account is \"{}\"".format(contract.functions.getname(address).call()))
 
+def get_list():
+	with open("database.json") as database:
+		data = load(database)
+		contract_address = data["registrar"] 
+	with open("registrar.abi") as abi_file:
+		abi = loads(abi_file.read())
+	contract = web3.eth.contract(address = contract_address, abi = abi)
+	ls = contract.functions.lst().call()
+	for addr in ls:
+		print("\"{}\": {}".format(contract.functions.getname(addr).call(), addr))
+
 
 if sys.argv[1] == "--deploy":
 	deploy(private_key)
@@ -143,3 +164,5 @@ elif sys.argv[1] == "--getacc":
 elif sys.argv[1] == "--getname":
 	address = sys.argv[2]
 	get_name(address)
+elif sys.argv[1] == "--list":
+	get_list()
