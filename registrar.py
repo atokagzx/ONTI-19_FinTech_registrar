@@ -22,6 +22,10 @@ def deploy(private_key):
 	with open("registrar.abi") as abi_file:
 		abi = loads(abi_file.read())
 	contract = web3.eth.contract(abi = abi, bytecode = bytecode)
+	url = "https://gasprice.poa.network"
+	headers = {"accept": "application/json"}
+	data = requests.get(url, headers = headers)
+	gas_price = int(data.json()["fast"] * 1000000000)
 	tx_c = contract.constructor().buildTransaction({
 		"from" : account.address,
 		"nonce" : web3.eth.getTransactionCount(account.address),
@@ -41,7 +45,6 @@ def add(name):
 	headers = {"accept": "application/json"}
 	data = requests.get(url, headers = headers)
 	gas_price = int(data.json()["fast"] * 1000000000)
-	print(gas_price)
 	if web3.eth.getBalance(account.address) < web3.eth.gasPrice * 400000:
 		print("No enough funds to add name")
 		return
