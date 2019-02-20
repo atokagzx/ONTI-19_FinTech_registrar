@@ -116,8 +116,13 @@ def get_account(name):
 		ls = contract.functions.lst().call()
 		same_names = set()
 		for addr in ls:
-			if contract.functions.getname(addr).call() == name:
-				same_names.add(addr)
+			try:
+				contract.functions.getname(addr).call()
+			except:
+				pass
+			else:
+				if contract.functions.getname(addr).call() == name:
+					same_names.add(addr)
 		if len(same_names) > 1:
 			print("Registered accounts are:")
 			for x in same_names:
