@@ -113,7 +113,7 @@ def get_account(name):
 	except:
 		print("No account registered for this name")
 	else:
-		print("Registered account is {}.".format(contract.functions.getacc("{}".format(name)).call()))
+		print("Registered account is {}".format(contract.functions.getacc("{}".format(name)).call()))
 
 def get_name(address):
 	with open("database.json") as database:
