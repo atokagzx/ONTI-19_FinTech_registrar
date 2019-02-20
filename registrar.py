@@ -56,7 +56,7 @@ def add(name):
 		signed_tx_add = account.signTransaction(tx_add)
 		tx_add_id = web3.eth.sendRawTransaction(signed_tx_add.rawTransaction)
 		tx_add_receipt = web3.eth.waitForTransactionReceipt(tx_add_id)
-		print("Succesfully added by {}".format(tx_add_receipt["transactionHash"].hex()))
+		print("Successfully added by {}".format(tx_add_receipt["transactionHash"].hex()))
 	else:
 		print("One account must correspond one name")
 
