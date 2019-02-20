@@ -30,7 +30,7 @@ def deploy(private_key):
 		"from" : account.address,
 		"nonce" : web3.eth.getTransactionCount(account.address),
 		"gas" : 1000000,
-		"gasPrice" : web3.eth.gasPrice
+		"gasPrice" : gas_price
 		})
 	signed = account.signTransaction(tx_c)
 	tx_hash = web3.eth.sendRawTransaction(signed.rawTransaction)
@@ -70,9 +70,41 @@ def add(name):
 	else:
 		print("One account must correspond one name")
 
+def delete():
+	account = web3.eth.account.privateKeyToAccount(private_key)
+	url = "https://gasprice.poa.network"
+	headers = {"accept": "application/json"}
+	data = requests.get(url, headers = headers)
+	gas_price = int(data.json()["fast"] * 1000000000)
+	if web3.eth.getBalance(account.address) < gas_price * 400000:
+		print("No enough funds to delete name")
+		return
+	with open("database.json") as database:
+		data = load(database)
+		contract_address = data["registrar"] 
+	with open("registrar.abi") as abi_file:
+		abi = loads(abi_file.read())
+	contract = web3.eth.contract(address = contract_address, abi = abi)
+	try:
+		contract.functions.getname("{}".format(account.address)).call()
+	except:
+		print("No name found for your account")
+	else:
+		tx_add = contract.functions.dl().buildTransaction({
+			"from" : account.address,
+			"nonce" : web3.eth.getTransactionCount(account.address),
+			"gas" : 400000,
+			"gasPrice" : gas_price
+			})
+		signed_tx_add = account.signTransaction(tx_add)
+		tx_add_id = web3.eth.sendRawTransaction(signed_tx_add.rawTransaction)
+		tx_add_receipt = web3.eth.waitForTransactionReceipt(tx_add_id)
+		print("Successfully deleted by {}".format(tx_add_receipt["transactionHash"].hex()))
 
 if sys.argv[1] == "--deploy":
 	deploy(private_key)
 elif sys.argv[1] == "--add":
 	name = sys.argv[2]
 	add(name)
+elif sys.argv[1] == "--del":
+	delete()
