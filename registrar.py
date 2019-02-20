@@ -40,7 +40,8 @@ def add(name):
 	url = "https://gasprice.poa.network"
 	headers = {"accept": "application/json"}
 	data = requests.get(url, headers = headers)
-	gas_price = data.json()["fast"] * 1000000000
+	gas_price = int(data.json()["fast"] * 1000000000)
+	print(gas_price)
 	if web3.eth.getBalance(account.address) < web3.eth.gasPrice * 400000:
 		print("No enough funds to add name")
 		return
