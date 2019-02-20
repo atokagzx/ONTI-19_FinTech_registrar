@@ -3,8 +3,10 @@
 from web3 import Web3, HTTPProvider
 from json import load, dump, loads
 import sys
+import requests
 
 web3 = Web3(HTTPProvider('https://sokol.poa.network'))
+url = "https://gasprice.poa.network"
 
 with open("account.json") as file:
     account_config = load(file)
@@ -35,6 +37,10 @@ def deploy(private_key):
 
 def add(name):
 	account = web3.eth.account.privateKeyToAccount(private_key)
+	url = "https://gasprice.poa.network"
+	headers = {"accept": "application/json"}
+	data = requests.get(url, headers = headers)
+	gas_price = data.json()["fast"] * 1000000000
 	if web3.eth.getBalance(account.address) < web3.eth.gasPrice * 400000:
 		print("No enough funds to add name")
 		return
@@ -51,7 +57,7 @@ def add(name):
 			"from" : account.address,
 			"nonce" : web3.eth.getTransactionCount(account.address),
 			"gas" : 400000,
-			"gasPrice" : web3.eth.gasPrice
+			"gasPrice" : gas_price
 			})
 		signed_tx_add = account.signTransaction(tx_add)
 		tx_add_id = web3.eth.sendRawTransaction(signed_tx_add.rawTransaction)
