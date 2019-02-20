@@ -114,10 +114,10 @@ def get_account(name):
 		print("No account registered for this name")
 	else:
 		ls = contract.functions.lst().call()
-		same_names = []
+		same_names = set()
 		for addr in ls:
 			if contract.functions.getname(addr).call() == name:
-				same_names.append(addr)
+				same_names.add(addr)
 		if len(same_names) > 1:
 			print("Registered accounts are:")
 			for x in same_names:
@@ -146,9 +146,14 @@ def get_list():
 	with open("registrar.abi") as abi_file:
 		abi = loads(abi_file.read())
 	contract = web3.eth.contract(address = contract_address, abi = abi)
-	ls = contract.functions.lst().call()
+	ls = set(contract.functions.lst().call())
 	for addr in ls:
-		print("\"{}\": {}".format(contract.functions.getname(addr).call(), addr))
+		try:
+			contract.functions.getname(addr).call()
+		except:
+			pass
+		else:
+			print("\"{}\": {}".format(contract.functions.getname(addr).call(), addr))
 
 
 if sys.argv[1] == "--deploy":
