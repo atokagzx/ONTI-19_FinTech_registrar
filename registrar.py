@@ -6,7 +6,7 @@ import sys
 
 web3 = Web3(HTTPProvider('https://sokol.poa.network'))
 
-with open('account.json') as file:
+with open("account.json") as file:
     account_config = load(file)
 
 ### Put your code below this comment ###
