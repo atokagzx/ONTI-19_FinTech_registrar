@@ -101,6 +101,35 @@ def delete():
 		tx_add_receipt = web3.eth.waitForTransactionReceipt(tx_add_id)
 		print("Successfully deleted by {}".format(tx_add_receipt["transactionHash"].hex()))
 
+def get_account(name):
+	with open("database.json") as database:
+		data = load(database)
+		contract_address = data["registrar"] 
+	with open("registrar.abi") as abi_file:
+		abi = loads(abi_file.read())
+	contract = web3.eth.contract(address = contract_address, abi = abi)
+	try:
+		contract.functions.getacc("{}".format(name)).call()
+	except:
+		print("No account registered for this name")
+	else:
+		print("Registered account is {}.".format(contract.functions.getacc("{}".format(name)).call()))
+
+def get_name(address):
+	with open("database.json") as database:
+		data = load(database)
+		contract_address = data["registrar"] 
+	with open("registrar.abi") as abi_file:
+		abi = loads(abi_file.read())
+	contract = web3.eth.contract(address = contract_address, abi = abi)
+	try:
+		contract.functions.getname(address).call()
+	except:
+		print("No name registered for this account")
+	else:
+		print("Registered account is \"{}\"".format(contract.functions.getname(address).call()))
+
+
 if sys.argv[1] == "--deploy":
 	deploy(private_key)
 elif sys.argv[1] == "--add":
@@ -108,3 +137,9 @@ elif sys.argv[1] == "--add":
 	add(name)
 elif sys.argv[1] == "--del":
 	delete()
+elif sys.argv[1] == "--getacc":
+	name = sys.argv[2]
+	get_account(name)
+elif sys.argv[1] == "--getname":
+	address = sys.argv[2]
+	get_name(address)
