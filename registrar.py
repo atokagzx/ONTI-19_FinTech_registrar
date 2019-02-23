@@ -93,7 +93,7 @@ def delete():
 		tx_add = contract.functions.dl().buildTransaction({
 			"from" : account.address,
 			"nonce" : web3.eth.getTransactionCount(account.address),
-			"gas" : 400000,
+			"gas" : 100000,
 			"gasPrice" : gas_price
 			})
 		signed_tx_add = account.signTransaction(tx_add)
