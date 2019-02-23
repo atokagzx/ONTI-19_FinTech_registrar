@@ -113,25 +113,21 @@ def get_account(name):
 	except:
 		print("No account registered for this name")
 	else:
-		ls = contract.functions.get_list().call()
-		same_names = set()
+		ls = contract.functions.getacc("{}".format(name)).call()
+		same_names = []
 		for addr in ls:
-			try:
-				contract.functions.getname(addr).call()
-			except:
-				pass
-			else:
-				if contract.functions.getname(addr).call() == name:
-					same_names.add(addr)
+			if addr == "0x0000000000000000000000000000000000000000":
+				continue
+			same_names.append(addr)
 		if len(same_names) > 1:
 			print("Registered accounts are:")
 			for x in same_names:
 				print(x)
 		else:
-			if contract.functions.getacc("{}".format(name)).call()[0] == "0x0000000000000000000000000000000000000000":
+			if len(same_names) == 0:
 				print("No account registered for this name")
 			else:
-				print("Registered account is {}".format(contract.functions.getacc("{}".format(name)).call()[0]))
+				print("Registered account is {}".format(same_names[0]))
 
 def get_name(address):
 	with open("database.json") as database:
