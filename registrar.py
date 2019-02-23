@@ -113,7 +113,7 @@ def get_account(name):
 	except:
 		print("No account registered for this name")
 	else:
-		ls = contract.functions.lst().call()
+		ls = contract.functions.get_list().call()
 		same_names = set()
 		for addr in ls:
 			try:
@@ -128,7 +128,7 @@ def get_account(name):
 			for x in same_names:
 				print(x)
 		else:
-			print("Registered account is {}".format(contract.functions.getacc("{}".format(name)).call()))
+			print("Registered account is {}".format(contract.functions.getacc("{}".format(name)).call()[0]))
 
 def get_name(address):
 	with open("database.json") as database:
@@ -151,7 +151,7 @@ def get_list():
 	with open("registrar.abi") as abi_file:
 		abi = loads(abi_file.read())
 	contract = web3.eth.contract(address = contract_address, abi = abi)
-	ls = set(contract.functions.lst().call())
+	ls = set(contract.functions.get_list().call())
 	for addr in ls:
 		try:
 			contract.functions.getname(addr).call()
